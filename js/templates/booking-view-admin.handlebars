@@ -1,0 +1,58 @@
+<div class="row">
+   <div class="col-sm-6">   
+      <h2>View Booking Details<h2/> 
+
+		<table class="table table-striped table-hover table-bordered">
+		   <tbody>
+		      <tr>
+		         <th>#</th>
+	            <td>{{booking_id}}</td>
+		      </tr>
+
+		      <tr>
+		         <th>Movie Title</th>
+	            <td>{{movie_title}}</td>
+		      </tr>		      
+		      <tr>
+		         <th>Genre</th>
+	            <td><span class='label label-info'>{{ genre }}</span></td>
+		      </tr>
+		      <tr>
+		         <th>Showtime</th>
+	            <td><span class='label label-info'>{{showtimes}}</span></td>
+		      </tr>
+			  
+			   <tr>
+		         <th>Ticket</th>
+	            <td>{{ticket}}</td>
+		      </tr>		 
+			  
+			  
+			   <tr>
+		         <th>Booking Date</th>
+	            <td>{{bookdate}}</td>
+		      </tr>		  
+
+			  <tr>
+		         <th>User</th>
+	            <td>{{user}}</td>
+		      </tr>		  
+			  
+			  
+		      
+		      <tr>
+		         <th>Status</th>
+	            <td>{{{displaybookingstatus status}}}</td>
+		      </tr>		      
+		   </tbody>
+		</table> 
+
+     	<p>
+     		<a href="#booking" class="btn btn-info" id="returntobooking">
+     			Return
+     		</a>
+
+     	</p>
+
+   </div>
+</div>

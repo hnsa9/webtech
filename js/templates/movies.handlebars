@@ -1,0 +1,203 @@
+<div class="row">
+  	<div class="col-sm-12">   
+          <h2>List of Movie</h2>
+     	<p>
+     		<a href="#movies/add" class="btn btn-info" id="addmovies">
+     			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add movies
+     		</a>
+     	</p>
+
+     	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" id="tblmovies">
+			  	<thead class="thead-dark">
+			    	<tr>
+				      <th>#</th>
+				      <th>Movie Title</th>
+				      <th>Genre</th>
+				      <th>Status</th>
+				      <th>Operation</th>
+			    	</tr>
+			  	</thead>
+			  	<tbody>
+				   {{#each movielist}}
+				      <tr>
+					      <td class='index-column'></td>
+
+					      <td>
+					      	<a href="#movies/view/{{movie_id}}" style="text-decoration: none">
+					      		{{ movie_title }}
+					      	</a>
+					      </td>
+
+					      <td>
+					      		{{{ displaygenre genre }}}
+					      </td>						  
+
+					      <td>
+					      	<a href="javascript:;" class="updatestatus" style="text-decoration: none">
+					      		{{{ displaymoviestatus status }}}
+					      	</a>
+					      </td>
+					      <td>
+					      	<a href='#movies/view/{{movie_id}}'> <i class="ri-eye-line"></i> </a>
+				      		&nbsp;
+
+				      		<a href='#movies/edit/{{movie_id}}'> <i class="ri-edit-box-line"></i> </a>
+				      		&nbsp;
+
+				      		<a href='javascript:;' class="deletemovie"> <i class="ri-delete-bin-line"></i> </a>
+					      </td>
+				      </tr>
+				   {{/each}}
+			  	<tbody>
+			</table>
+		</div>
+  	</div>
+</div>
+
+<script>
+  	$(function(){
+
+      $("#tblmovies").on("click", ".updatestatus", function() {
+
+	      var link = $(this);
+	      console.log(link);
+
+	      //                     TD       TR
+	      var parentTR = $(this).parent().parent();
+	      var firstTD = $(parentTR).children().eq(0);
+
+	      // get status
+	      var status = $(firstTD).data("status");
+	      var movie_id = $(firstTD).data("movie_id");
+	      Swal.fire("Status: " + status);
+
+			Swal.fire({
+			  	title: 'Are you sure?',
+			  	html: "You want to change the status?<br />Status: " + status,
+			   icon: 'warning',
+			   showCancelButton: true,
+			   confirmButtonColor: '#3085d6',
+			   cancelButtonColor: '#d33',
+			   confirmButtonText: 'Yes, change it!'
+
+			}).then((result) => {
+
+				if (result.value) {
+
+					var obj = new Object();
+				 	obj.status = status;	
+
+	            $.ajax({
+	               type: "put",
+	               url: 'api/movies/status/' + movie_id,
+					   contentType: 'application/json',
+			      	data: JSON.stringify(obj),            
+					   dataType: "json",
+	               success: function(data){
+
+	                  if (data.updateStatus) {
+
+	                     bootbox.alert("movie status update successful");
+
+	                     $(firstTD).data("status", data.status);
+
+								if (data.status == 0)				
+									$(link).html("<span class='label label-danger'>Coming Soon</span>"); 
+								else
+									$(link).html("<span class='label label-success'>Now Showing</span>");	
+
+	                  } 
+	                  else {
+
+	                     bootbox.alert("movie status update failed - please try again: " + data.errorMessage)
+	                  }
+	               },
+	               error: function() {
+	                  console.log("error");
+	               }
+	            });					
+				}
+
+			})
+      });
+
+      $("#tblmovies").on("click", ".deletemovie", function() {
+      	var link = $(this);
+
+      	//                     TD       TR
+	      var parentTR = $(this).parent().parent();
+	      var firstTD = $(parentTR).children().eq(0);
+
+	      //get the id
+	      var movie_id = $(firstTD).data("movie_id")
+
+			Swal.fire({
+			  	title: 'Are you sure?',
+			  	html: "You want to delete the movie?",
+			   icon: 'warning',
+			   showCancelButton: true,
+			   confirmButtonColor: '#3085d6',
+			   cancelButtonColor: '#d33',
+			   confirmButtonText: 'Yes, delete it!'
+
+			}).then((result) => {
+
+				if (result.value) {
+
+		        	//delete the movie at table movies using movie id
+
+		        	var token = sessionStorage.getItem("token");
+
+				   $.ajax({
+				      type: "delete",
+				      url: 'api/movies/' + movie_id,               
+				      dataType: "json",
+				      success: function(data){
+
+	                  if (data.deleteStatus) {
+
+	                     bootbox.alert("movie deletion successful");
+
+						      $(parentTR).fadeOut("slow", "swing", function(e) {
+
+						      	//remove row from the table
+						        	$(parentTR).remove();
+
+
+						      });	                    
+
+	                  } 
+	                  else {
+
+	                     bootbox.alert("movie deletion failed - please try again: " + data.error)
+	                  }
+
+	               },
+			         error: function(xhr, statusText, err) {
+
+			         	if (xhr.status == 401) {
+						     	//response text from the server if there is any
+						     	var responseText = JSON.parse(xhr.responseText);
+						     	bootbox.alert("Error 401 - Unauthorized: " + responseText.message);
+						     	
+								$("#loginname").html("noname");
+								sessionStorage.removeItem("token");
+								sessionStorage.removeItem("login");
+								window.location.href = "#login";
+								return;
+						   }
+
+						   if (xhr.status == 404) {
+						     	bootbox.alert("Error 404 - API resource not found at the server");
+						   }
+
+			         }
+	            });		            
+
+				}
+
+			})
+      });
+   });
+</script>

@@ -1,0 +1,40 @@
+<div class="row">
+   <div class="col-sm-6">   
+      <h2>Update Movie's Showtime<h2/> 
+
+		<form class="form-horizontal" id="formedit">
+		  <fieldset>
+
+			  <input type="hidden" id="movie_id" value="{{movie_id}}">
+
+		    <div class="form-group">
+		      <label for="editmovie_title" class="col-lg-3 control-label">Movie Title</label>
+		      <div class="col-lg-9">
+		        <input type="text" class="form-control" id="editmovie_title" value="{{movie_title}}" readonly>	
+		      </div>
+		    </div>
+
+		    <div class="form-group">
+		      <label for="editgenre" class="col-lg-3 control-label">Genre</label>
+		      <div class="col-lg-9">
+		        <input type="text" class="form-control" id="editgenre" value="{{genre}}" readonly>	
+		      </div>				  
+		    </div>			
+
+		    <div class="form-group">
+		      <label for="editshowtimes" class="col-lg-3 control-label">Showtime</label>
+		      <div class="col-lg-9">
+		        <input type="time" class="form-control" id="editshowtimes" value="{{showtimes}}"required>
+		      </div>
+		    </div>
+
+		    <div class="form-group">
+		      <div class="col-lg-9 col-lg-offset-3">	      	
+		        <button type="reset" class="btn btn-default" id="formeditcancel">Cancel</button>
+		        <button type="submit" class="btn btn-primary">Submit</button>
+		      </div>
+		    </div>
+		  </fieldset>
+		</form>     
+   </div>
+</div>
